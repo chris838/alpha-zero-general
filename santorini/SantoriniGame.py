@@ -5,6 +5,8 @@ from Game import Game
 from .SantoriniLogic import Board
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 class SantoriniGame(Game):
     """
     Many of thes functions are based on those from OthelloGame.py:
@@ -422,3 +424,60 @@ class SantoriniGame(Game):
             print("|")
 
         print("-----------------------")
+
+    @staticmethod
+    def display_3d(board):
+
+        # Setup the figure and axes
+        fig = plt.figure(figsize=(3, 3))
+        ax1 = fig.add_subplot(111, projection='3d')
+
+        # Limit to the board playing area
+        ax1.set_xlim([-0.5, 4.5])
+        ax1.set_ylim([-0.5, 4.5])
+        ax1.set_zlim([0, 4])
+
+        # Hide cluttered gridlines, ticks, axes
+        ax1.set_zticks([])
+        color_tuple = (1.0, 1.0, 1.0, 0.0)
+        ax1.w_xaxis.set_pane_color(color_tuple)
+        ax1.w_yaxis.set_pane_color(color_tuple)
+        ax1.w_zaxis.set_pane_color(color_tuple)
+        ax1.w_zaxis.line.set_color(color_tuple)
+        ax1.grid(False)
+
+        # Remove whitespace around the plot
+        fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+
+        # Create x,y indices
+        _x = np.arange(5)
+        _y = np.arange(5)
+        _xx, _yy = np.meshgrid(_x, _y)
+        x, y = _xx.ravel() - 0.5, _yy.ravel() - 0.5
+
+        # Create the board blocks
+        top = board[1].ravel()
+        bottom = np.zeros_like(top)
+        colors =  (['grey', 'dimgrey'] * len(top))[:len(top)]
+        sizes =  [1] * len(top)
+        player_size = 0.5
+
+        # Get indices of the players
+        players = board[0].ravel()
+        red_female,     = np.where(players == -2)
+        red_male,       = np.where(players == -1)
+        blue_female,    = np.where(players == 1)
+        blue_male,      = np.where(players == 2)
+
+        # Add the players to the output
+        for (index, colour) in [(red_male, 'firebrick'), (red_female, 'lightcoral'), (blue_male, 'navy'), (blue_female, 'royalblue')]:
+            x = np.append(       x, x[index] + player_size/2)
+            y = np.append(       y, y[index] + player_size/2)
+            bottom = np.append(  bottom, top[index] )
+            top = np.append(     top, player_size)
+            colors.append(colour)
+            sizes.append(player_size)
+
+        # Present
+        ax1.bar3d(x, y, bottom, sizes, sizes, top, shade=True, color=colors)
+        plt.show()
