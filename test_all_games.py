@@ -50,6 +50,9 @@ from rts.keras.NNet import NNetWrapper as RTSKerasNNet
 from dotsandboxes.DotsAndBoxesGame import DotsAndBoxesGame
 from dotsandboxes.keras.NNet import NNetWrapper as DotsAndBoxesKerasNNet
 
+from santorini.SantoriniGame import SantoriniGame
+from santorini.keras.NNet import NNetWrapper as SantoriniKerasNNet
+
 import numpy as np
 from utils import *
 
@@ -95,6 +98,9 @@ class TestAllGames(unittest.TestCase):
 
     def test_dotsandboxes_keras(self):
         self.execute_game_test(DotsAndBoxesGame(3), DotsAndBoxesKerasNNet)
+
+    def test_santorini_keras(self):
+        self.execute_game_test(SantoriniGame(5), SantoriniKerasNNet)
 
 if __name__ == '__main__':
     unittest.main()
